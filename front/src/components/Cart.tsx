@@ -10,6 +10,8 @@ const INITIAL_TX_DATA = { hash: null, error: null }
 export const Cart = () => {
     const [txData, setTxData] = useState<TxData>(INITIAL_TX_DATA)
 
+    const BUSINESS_ADDRESS = import.meta.env.VITE_BUSINESS_ADDRESS
+
     const { state: { currentAccount, cart }, setState } = useContext(Context)
 
     const wallet = window.ethereum;
@@ -29,14 +31,16 @@ export const Cart = () => {
     }
 
     const handlePayment = async () => {
+        if (!BUSINESS_ADDRESS) alert("You need to add the business address to the env file")
         if (!currentAccount) return
 
         setTxData(INITIAL_TX_DATA)
 
         const txParams: TxParams = {
-            to: import.meta.env.VITE_BUSINESS_ADDRESS,
+            to: BUSINESS_ADDRESS,
             from: currentAccount,
-            value: ethers.toBeHex(ethers.parseEther(total.toString()))
+            value: ethers.toBeHex(ethers.parseEther(total.toString())),
+            gas: 65000
         }
         console.log({ txParams })
 
