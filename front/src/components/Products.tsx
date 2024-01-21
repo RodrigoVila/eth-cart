@@ -1,9 +1,15 @@
-import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
+import { ProductsTable } from './ProductTableList'
+import { useState } from 'react'
+import { FaTableCells } from "react-icons/fa6";
+import { LuSquareStack } from "react-icons/lu";
 
-import { ProductType } from './Product'
+import { ProductCardList } from './ProductCardList'
+import { Button } from './Button';
 
 export const Products = () => {
+    const [viewType, setViewType] = useState<productsViewType>("table")
+
     const { data, isLoading } = useQuery({
         queryKey: ['products'],
         queryFn: async (): Promise<ProductType[]> => {
@@ -12,34 +18,20 @@ export const Products = () => {
         }
     })
 
-    console.log({ data, isLoading })
+    const toggleProductView = () => {
+        setViewType((currView) => currView === "table" ? "card" : "table")
+    }
 
     if (isLoading) return <div>Loading...</div>
 
     return (
-        <div className="container mx-auto p-4">
-            <table className="min-w-full text-white border border-gray-300">
-                <thead>
-                    <tr>
-                        <th className="py-2 px-4 border-b">Nombre</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data?.map((product) => (
-                        <tr key={product.product_id}>
-                            <td className="py-2 px-4 border-b">
-                                <Link
-                                    to={`/productos/${product.product_id}`}
-                                    className="text-blue-500 hover:underline"
-                                >
-                                    {product.product_name}
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-
+        <section className='flex flex-col items-center max-w-max gap-8'>
+            <Button onClick={toggleProductView} >
+                {viewType === "table" ? <LuSquareStack size={20} className="group-hover:text-slate-800" /> : <FaTableCells size={20} className="group-hover:text-slate-800" />}
+            </Button>
+            <div className='w-full h-full'>
+                {viewType === "table" ? <ProductsTable products={data} /> : <ProductCardList products={data} />}
+            </div>
+        </section>
     )
 }

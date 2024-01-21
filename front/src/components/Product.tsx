@@ -1,42 +1,78 @@
-import { useParams } from 'react-router-dom'
+import { useContext, useEffect, useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 
-export type ProductType = {
-    product_id: number
-    product_name: string
-    unit_price: number
-}
+import { Context } from '../context'
+import { Card } from './Card'
 
 export const Product = () => {
-    const params = useParams()
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const { state, setState } = useContext(Context)
 
-    const { data, isLoading } = useQuery({
+    const { data: productData, isLoading } = useQuery({
         queryKey: ['product'],
         queryFn: async (): Promise<ProductType> => {
-            const res = await fetch(`http://localhost:5000/products/${params.id}`)
+            const res = await fetch(`http://localhost:5000/products/${id}`)
             return res.json()
         }
     })
 
-    console.log({ data, isLoading })
+    const currentQuantity = useMemo(
+        () =>
+            state?.cart.find((product) => product.product_id === Number(id))
+                ?.quantity,
+        [state?.cart, id],
+    );
 
-    if (isLoading) return <div>Loading...</div>
+    const { register, handleSubmit, formState: { errors, isSubmitSuccessful, } } = useForm<FormValues>({
+        defaultValues: { quantity: currentQuantity },
+    });
 
-    return (
-        <div className="border-2 rounded-xl flex flex-col p-10 w-max gap-2">
-            <h4 className='text-2xl '>Product</h4>
-            <div className='flex gap-2'>
-                <h6>ID</h6>
-                <p>{data?.product_id}</p>
-            </div>
-            <div className='flex gap-2'>
-                <h6>Name</h6>
-                <p>{data?.product_name}</p>
-            </div>
-            <div className='flex gap-2'>
-                <h6>Price</h6>
-                <p>{data?.unit_price}</p>
-            </div>
+    const onSubmit = (formData: FormValues) => {
+        if (!productData) return
+        const { quantity } = formData
+
+        setState((currState) => {
+            const updatedCart = [...currState.cart]
+            const existingProductIndex = currState.cart.findIndex((cartProduct) => cartProduct.product_id === productData.product_id);
+            const unitPrice = productData.unit_price
+
+            if (existingProductIndex !== -1) {
+                updatedCart[existingProductIndex] = {
+                    ...updatedCart[existingProductIndex],
+                    quantity,
+                    item_total: unitPrice * quantity
+                }
+            } else {
+                updatedCart.push({
+                    ...productData,
+                    quantity,
+                    item_total: unitPrice * quantity
+                })
+            }
+            return { ...currState, cart: updatedCart }
+        })
+    }
+
+    useEffect(() => {
+        isSubmitSuccessful && navigate("/products")
+    }, [isSubmitSuccessful, navigate])
+
+
+    return isLoading ? <div>Loading...</div> : (
+        <div className='flex flex-col gap-5 items-center'>
+            <Card product={productData} />
+
+            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
+                <div className='flex items-center gap-5'>
+                    <label>Quantity:</label>
+                    <input {...register("quantity", { required: true })} type="number" min={1} className='text-black rounded-md py-1 w-20 p-2 font-bold text-lg' />
+                </div>
+                <button type='submit' className='w-full py-2 px-6 border-2 rounded-lg border-white hover:text-slate-900 hover:bg-white transition-all duration-200'>Add to cart</button>
+                {errors.quantity && <span className='text-red-500 text-center'>Error: Quantity required</span>}
+            </form>
         </div>
     )
 }
