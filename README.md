@@ -61,9 +61,9 @@ Run
 docker run --rm -it -p 9999:8545 -v ${PWD}/data:/data ethereum/client-go:latest \
     --datadir /data \
     --allow-insecure-unlock \
-    --miner.etherbase 2d95124f580b55be9a1467f396f299283f267298 \
+    --miner.etherbase 57d0e543d0b96f4141fb43505801bcb7e3b09d3d \
     --mine \
-    --unlock "2d95124f580b55be9a1467f396f299283f267298" \
+    --unlock "57d0e543d0b96f4141fb43505801bcb7e3b09d3d" \
     --http \
     --http.addr "0.0.0.0" \
     --http.port 8545 \
@@ -83,10 +83,7 @@ Add the data below and save
 ## LAUNCH BACKEND
 
 Go to "back" folder and open the .env file
-Add the passwd you created at [BLOCKCHAIN CONFIGURATION](https://github.com/RodrigoVila/codecrypto-faucet?tab=readme-ov-file#blockchain-configuration) section
-
-Add the path to your keysytore file into the KEYSTORE_FILE_PATH variable at app.js
-![image](https://github.com/RodrigoVila/codecrypto-faucet/assets/42290738/0c23c7d1-704c-4bff-b1f7-0d9b57eb18fb)
+Add the business acount (The one you will be using to receive the fake money after the transaction is completed).
 
 Open a new console
 Go to back folder `cd back`
@@ -103,5 +100,4 @@ Run `npm run dev`
 ## HOW TO USE?
 
 Visit website at `http://localhost:5173/`
-[Connect your Metamask account](https://docs.metamask.io/wallet/how-to/connect/)
-Add some items to the cart and pay using fake ethers
+Add some items to the cart and pay with [your Metamask account](https://docs.metamask.io/wallet/how-to/connect/) using fake ethers
