@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import { Layout } from './components/Layout.tsx'
@@ -18,8 +18,8 @@ export const App = () => {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<Layout />}>
-                            <Route index element={<Products />} />
-                            {/* <Route path="*" element={<Products />} /> */}
+                            <Route index element={<Navigate to="/products" replace />} />
+                            <Route path="*" element={<Navigate to="/products" replace />} />
                             <Route path="/products" element={<Products />} />
                             <Route path="/products/:id" element={<Product />} />
                             <Route path="/cart" element={<Cart />} />
