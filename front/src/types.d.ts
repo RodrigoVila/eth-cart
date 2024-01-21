@@ -13,3 +13,14 @@ type productsViewType = "table" | "card";
 type FormValues = {
   quantity: number;
 };
+
+type TxData = {
+  hash: string | null;
+  error: string | null;
+};
+
+type TxParams = {
+  to: string;
+  from: string;
+  value: string;
+};

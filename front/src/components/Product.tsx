@@ -57,22 +57,24 @@ export const Product = () => {
     }
 
     useEffect(() => {
-        isSubmitSuccessful && navigate("/products")
+        isSubmitSuccessful && navigate("/cart")
     }, [isSubmitSuccessful, navigate])
 
 
-    return isLoading ? <div>Loading...</div> : (
-        <div className='flex flex-col gap-5 items-center'>
+    if (isLoading) return <div>Loading...</div>
+
+    return productData ? (
+        <section className='flex flex-col gap-5 items-center'>
             <Card product={productData} />
 
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
-                <div className='flex items-center gap-5'>
+            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5 w-full'>
+                <div className='flex items-center justify-center gap-5'>
                     <label>Quantity:</label>
                     <input {...register("quantity", { required: true })} type="number" min={1} className='text-black rounded-md py-1 w-20 p-2 font-bold text-lg' />
                 </div>
                 <button type='submit' className='w-full py-2 px-6 border-2 rounded-lg border-white hover:text-slate-900 hover:bg-white transition-all duration-200'>Add to cart</button>
                 {errors.quantity && <span className='text-red-500 text-center'>Error: Quantity required</span>}
             </form>
-        </div>
-    )
+        </section>
+    ) : null
 }

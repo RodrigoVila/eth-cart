@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 export const ProductsTable = ({ products, isCartTable = false }: ProductsListProps) => {
     const navigate = useNavigate()
 
-    return products ? (
+    if (!products) return <span>No data...</span>
+
+    return (
         <div className="container mx-auto px-10">
             <table className="min-w-full text-white border border-gray-300">
                 <thead className='text-left'>
@@ -34,12 +36,12 @@ export const ProductsTable = ({ products, isCartTable = false }: ProductsListPro
                                 {product_name}
                             </td>
                             <td className="py-2 px-4 border-b">
-                                {`$ ${unit_price}`}
+                                {`$ ${unit_price.toFixed(2)}`}
                             </td>
                             {isCartTable ?
                                 <>
                                     <th className="py-2 px-4 border-b">{quantity}</th>
-                                    <th className="py-2 px-4 border-b">{`$ ${item_total}`}</th>
+                                    <th className="py-2 px-4 border-b">{`$ ${item_total.toFixed(2)}`}</th>
                                 </>
                                 : null}
                         </tr>
@@ -47,5 +49,5 @@ export const ProductsTable = ({ products, isCartTable = false }: ProductsListPro
                 </tbody>
             </table>
         </div >
-    ) : <span>No data...</span>
+    )
 }

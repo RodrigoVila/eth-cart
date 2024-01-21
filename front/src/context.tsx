@@ -2,6 +2,7 @@ import { Dispatch, ReactNode, SetStateAction, createContext, useState } from "re
 
 type ContextData = {
   cart: ProductType[]
+  currentAccount: string | null
 }
 
 type ContextType = {
@@ -10,7 +11,7 @@ type ContextType = {
 };
 
 const initialData: ContextType = {
-  state: { cart: [] },
+  state: { cart: [], currentAccount: null },
   setState: () => { }
 }
 
