@@ -1,22 +1,22 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from "react";
 
-type ContextProviderProps = {
-  children: ReactNode;
-};
-
 type ContextData = {
-  state: null[]
+  cart: ProductType[]
 }
 
 type ContextType = {
-  state: ContextData | null;
-  setState: Dispatch<SetStateAction<ContextData | null>>;
+  state: ContextData;
+  setState: Dispatch<SetStateAction<ContextData>>;
 };
 
 const initialData: ContextType = {
-  state: null,
+  state: { cart: [] },
   setState: () => { }
 }
+
+type ContextProviderProps = {
+  children: ReactNode;
+};
 
 export const Context = createContext<ContextType>(initialData);
 
